@@ -276,7 +276,7 @@ public:
 		num_line = 0;
 		ifstream infile;
 		infile.open("file.txt");
-		cout << i;
+		cout << i; //removal
 		while (infile >> tmpName >> tmpTimeprep >> tmpPrice) {
 			menuObj.setItemName(tmpName);
 			menuObj.setPrepTime(tmpTimeprep);
@@ -378,6 +378,7 @@ int main() {
 					switch (choice) {
 					case 1:
 						customerObj.viewMenu();
+						system("pause");
 						break;
 					case 2:
 						while (true) {
