@@ -4,12 +4,16 @@
 #include <fstream>
 #define max_item 20
 using namespace std;
+
+int autoItemId = 0;
+int autoOrderId = 0;
 string tmpName, line;
 int num_line = 0;
 int tmpTimeprep = 0;
 float tmpPrice = 0;
 int i = 0;
-int attempt=0;
+int attempt = 0;
+
 
 class Item {
 private:
@@ -28,7 +32,7 @@ public:
 	}
 	//Set or Mutator Functions
 	void setItemId() {
-		//Auto increment the ItemID
+		itemId = ++autoItemId;
 	}
 	void setName(string name) {
 		this->name = name;
@@ -58,9 +62,6 @@ public:
 	int getQuantity() {
 		return quantity;
 	}
-
-
-
 };
 
 class Order {
@@ -72,6 +73,7 @@ private:
 public:
 	//set or Mutator Functions
 	void setOrderId() {
+		orderId = ++autoOrderId;
 		//auto increment the orderID
 	}
 	void setTotalCost(float totalCost) {
@@ -96,6 +98,7 @@ class Menu {
 private:
 	float price[max_item];
 	int prepTime[max_item];
+	int quantity[max_item];
 	string itemName[max_item];
 	Item itemObj[max_item];
 public:
@@ -109,6 +112,10 @@ public:
 		this->prepTime[i] = prepTime;
 		itemObj[i].setPrepTime(prepTime);
 	}
+	void setQuantity(int quantity) {
+		this->quantity[i] = quantity;
+		itemObj[i].setQuantity(quantity);
+	}
 	void setItemName(string itemName) {
 		cout << i;
 		this->itemName[i] = itemName;
@@ -121,15 +128,18 @@ public:
 	int getPrepTime(int m) {
 		return prepTime[m];
 	}
+	int getQuantity(int m) {
+		return quantity[m];
+	}
 	string getItemName(int m) {
 		return itemName[m];
 	}
-	//File not working yet
 	void to_File() {
 		ofstream outfile;
 		outfile.open("file.txt", ios::out);
 		for (int m = 0; m < i; m++) {
 			outfile << itemName[m] << endl;
+			outfile << quantity[m] << endl;
 			outfile << prepTime[m] << endl;
 			outfile << price[m] << endl;
 		}
@@ -142,14 +152,19 @@ protected:
 	string username;
 	string password;
 	Menu menuObj;
+	string tmpName;
+	int tmpTimeprep;
+	int tmpQuantity;
+	float tmpPrice;
 public:
 	bool toLogin(string username, string password) {
 		if (this->username == username && this->password == password)
 			return true;
 		else
 			attempt++;
-			return false;
+		return false;
 	}
+	//modify this for quantity (below)
 	void searchItems(string item) {
 		string tmpitem;
 		ifstream infile;
@@ -165,9 +180,7 @@ public:
 
 class Admin : public Users {
 private:
-	string tmpName;
-	int tmpTimeprep;
-	float tmpPrice;
+
 public:
 	Admin() {
 		Users::username = "admin";
@@ -176,8 +189,9 @@ public:
 		i = 0;
 		ifstream infile;
 		infile.open("file.txt");
-		while (infile >> tmpName >> tmpTimeprep >> tmpPrice) {
+		while (infile >> tmpName >> tmpQuantity >> tmpTimeprep >> tmpPrice) {
 			menuObj.setItemName(tmpName);
+			menuObj.setQuantity(tmpQuantity);
 			menuObj.setPrepTime(tmpTimeprep);
 			menuObj.setPrice(tmpPrice);
 		}
@@ -187,12 +201,15 @@ public:
 	void addNewItem() {
 		cout << "Enter Item Name : ";
 		getline(cin, tmpName);
+		cout << "Enter Item Quantity : ";
+		cin >> tmpQuantity;
 		cout << "Enter Item PrepTime : ";
 		cin >> tmpTimeprep;
 		cout << "Enter Item Price : ";
 		cin >> tmpPrice;
 		cin.ignore();
 		menuObj.setItemName(tmpName);
+		menuObj.setQuantity(tmpQuantity);
 		menuObj.setPrepTime(tmpTimeprep);
 		menuObj.setPrice(tmpPrice);
 		menuObj.to_File();
@@ -209,12 +226,14 @@ public:
 		ifstream infile;
 		infile.open("file.txt");
 		// Don't remember why it works but just don't trouble the increments and stuff
-		while (infile >> tmpName >> tmpTimeprep >> tmpPrice) {
+		while (infile >> tmpName >> tmpQuantity >> tmpTimeprep >> tmpPrice) {
 			m++;
 			if (item == tmpName) {
 				i = m - 1;
 				cout << "Enter Item Name : ";
 				getline(cin, tmpName);
+				cout << "Enter Item Quantity : ";
+				cin >> tmpQuantity;
 				cout << "Enter Item PrepTime : ";
 				cin >> tmpTimeprep;
 				cout << "Enter Item Price : ";
@@ -222,6 +241,7 @@ public:
 				cin.ignore();
 				cout << tmpI;
 				menuObj.setItemName(tmpName);
+				menuObj.setQuantity(tmpQuantity);
 				menuObj.setPrepTime(tmpTimeprep);
 				menuObj.setPrice(tmpPrice);
 				i = tmpI;
@@ -244,9 +264,10 @@ public:
 		infile.open("file.txt");
 		// open a temporary file where we write all the data that is not to be deleted
 		ofstream outfile("temp.txt");
-		while (infile >> tmpName >> tmpTimeprep >> tmpPrice) {
+		while (infile >> tmpName >> tmpQuantity >> tmpTimeprep >> tmpPrice) {
 			if (item != tmpName) {
 				outfile << tmpName << endl;
+				outfile << tmpQuantity << endl;
 				outfile << tmpTimeprep << endl;
 				outfile << tmpPrice << endl;
 				ofstream counterfile;
@@ -276,9 +297,10 @@ public:
 		num_line = 0;
 		ifstream infile;
 		infile.open("file.txt");
-		cout << i; //removal
-		while (infile >> tmpName >> tmpTimeprep >> tmpPrice) {
+		cout << i;
+		while (infile >> tmpName >> tmpQuantity >> tmpTimeprep >> tmpPrice) {
 			menuObj.setItemName(tmpName);
+			menuObj.setQuantity(tmpQuantity);
 			menuObj.setPrepTime(tmpTimeprep);
 			menuObj.setPrice(tmpPrice);
 		}
@@ -289,6 +311,7 @@ public:
 		cout << "**********************" << endl;
 		for (int m = 0; m < i; m++) {
 			cout << menuObj.getItemName(m) << endl;
+			cout << menuObj.getQuantity(m) << endl;
 			cout << menuObj.getPrepTime(m) << endl;
 			cout << menuObj.getPrice(m) << endl;
 			cout << "*************************" << endl;
@@ -402,7 +425,7 @@ int main() {
 				}
 			}
 		}
-	} while (option != 3 && attempt <3);
+	} while (option != 3 && attempt < 3);
 	system("pause");
 	return 0;
 }
