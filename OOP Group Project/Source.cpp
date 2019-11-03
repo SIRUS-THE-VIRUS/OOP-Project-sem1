@@ -312,19 +312,17 @@ public:
 		infile.close();
 	}
 	void viewMenu() { //Display is working just need to make it look pretty now
-		cout << "*********Menu*********" << endl;
-		cout << "**********************" << endl;
+		cout << "\t\t\t\t\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2 MENU \xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\n";
 		for (int m = 0; m < i; m++) {
-			cout << menuObj.getItemName(m) << endl;
-			cout << menuObj.getQuantity(m) << endl;
-			cout << menuObj.getPrepTime(m) << endl;
-			cout << menuObj.getPrice(m) << endl;
-			cout << "*************************" << endl;
+				cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 " << menuObj.getItemName (m) << endl;
+				cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 " << menuObj.getQuantity (m) << endl;
+				cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 " << menuObj.getPrepTime (m) << endl;
+				cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 " << menuObj.getPrice (m) << endl;
+				cout << "\n\n\t\t\t\t\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\n";	
 		}
 	}
-
-
-};
+	
+}; 
 
 int main() {
 	int option;
