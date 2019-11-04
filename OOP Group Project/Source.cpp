@@ -19,7 +19,8 @@ int tmpItemId = 0;
 float tmpPrice = 0;
 int i = 0;
 int attempt = 0;
-
+float totalcost = 0;
+int totalpreptime = 0;
 
 class Item {
 private:
@@ -179,16 +180,19 @@ public:
 		return false;
 	}
 	//modify this for quantity (below)
-	void searchItems(string item) {
+	int searchItems(string item) {
+		int count=0;
 		string tmpitem;
 		ifstream infile;
 		infile.open("file.txt");
-		for (int m = 0; m < i * 3; m++) {
-			infile >> tmpitem;
-			if (item == tmpitem) {
-				cout << tmpitem << "was found" << endl;
+		while (infile >> tmpItemId >> tmpName >> tmpQuantity >> tmpTimeprep >> tmpPrice) {
+			if (item == tmpName) {
+				cout << tmpName << "was found" << endl;
+				return count;
 			}
+			else { count++; }
 		}
+		return -1;
 	}
 };
 
@@ -305,7 +309,7 @@ public:
 
 class Customer : public Users {
 private:
-
+	Order orderObj[max_item];
 public:
 	Customer() {
 		Users::username = "cust1";
@@ -325,6 +329,26 @@ public:
 		}
 		infile.close();
 	}
+	void setOrderTotalCost(int m) {
+		totalcost += menuObj.getPrice(m);
+		orderObj[m].setTotalCost(totalcost);
+	}
+	void setOrderTotalPrepTime(int m) {
+		totalpreptime += menuObj.getPrepTime(m);
+		orderObj[m].setTotalPrepTime(totalpreptime);
+	}
+	void setOrderId(int m) {
+		orderObj[m].setOrderId();
+	}
+	float getOrderTotalCost(int m) {
+		return orderObj[m].getTotalCost();
+	}
+	int getOrderTotalPrepTime(int m) {
+		return orderObj[m].getTotalPrepTime();
+	}
+	int getOrderId(int m) {
+		return orderObj[m].getOrderId();
+	}
 	void viewMenu() { //Display is working just need to make it look pretty now
 		cout << "\t\t\t\t\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2 MENU \xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\n";
 		for (int m = 0; m < i; m++) {
@@ -343,6 +367,7 @@ public:
 int main() {
 	int option;
 	int decision;
+	int location;
 	string username, password, searchItem;
 	do {
 		int choice = 0;
@@ -438,8 +463,21 @@ int main() {
 					cin.ignore();
 					switch (choice) {
 					case 1:
+						int tmpid;
 						customerObj.viewMenu();
-						cout << "What would you like to purchase" << endl;
+						cout << "What would you like to purchase (name): " << endl;
+						getline(cin, searchItem);
+						location = customerObj.searchItems(searchItem);
+						if (location != -1) {
+							customerObj.setOrderId(location);
+							customerObj.setOrderTotalCost(location);
+							customerObj.setOrderTotalPrepTime(location);
+							ofstream outfile("orders.txt");
+							outfile << customerObj.getOrderId(location) << endl;
+							outfile << customerObj.getOrderTotalPrepTime(location) << endl;
+							outfile << customerObj.getOrderTotalCost(location) << endl;
+							outfile.close();
+						}
 						system("pause");
 						break;
 					case 2:
