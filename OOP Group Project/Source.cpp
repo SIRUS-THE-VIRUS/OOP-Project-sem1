@@ -15,6 +15,7 @@ int autoOrderId = 0;
 string tmpName, line;
 int num_line = 0;
 int tmpTimeprep = 0;
+int tmpItemId = 0;
 float tmpPrice = 0;
 int i = 0;
 int attempt = 0;
@@ -113,6 +114,10 @@ public:
 		itemObj[i].setPrice(price);
 		i++;
 	}
+	//check this auto item id thing later
+	void setItemId() {
+		itemObj[i].setItemId();
+	}
 	void setPrepTime(int prepTime) {
 		this->prepTime[i] = prepTime;
 		itemObj[i].setPrepTime(prepTime);
@@ -139,10 +144,14 @@ public:
 	string getItemName(int m) {
 		return itemName[m];
 	}
+	int getItemId(int m) {
+		return itemObj[m].getItemId();
+	}
 	void to_File() {
 		ofstream outfile;
 		outfile.open("file.txt", ios::out);
 		for (int m = 0; m < i; m++) {
+			outfile << itemObj[m].getItemId() << endl;
 			outfile << itemName[m] << endl;
 			outfile << quantity[m] << endl;
 			outfile << prepTime[m] << endl;
@@ -194,7 +203,8 @@ public:
 		i = 0;
 		ifstream infile;
 		infile.open("file.txt");
-		while (infile >> tmpName >> tmpQuantity >> tmpTimeprep >> tmpPrice) {
+		while (infile >> tmpItemId >> tmpName >> tmpQuantity >> tmpTimeprep >> tmpPrice) {
+			menuObj.setItemId();
 			menuObj.setItemName(tmpName);
 			menuObj.setQuantity(tmpQuantity);
 			menuObj.setPrepTime(tmpTimeprep);
@@ -213,6 +223,7 @@ public:
 		cout << "Enter Item Price : ";
 		cin >> tmpPrice;
 		cin.ignore();
+		menuObj.setItemId();
 		menuObj.setItemName(tmpName);
 		menuObj.setQuantity(tmpQuantity);
 		menuObj.setPrepTime(tmpTimeprep);
@@ -245,6 +256,7 @@ public:
 				cin >> tmpPrice;
 				cin.ignore();
 				cout << tmpI;
+				menuObj.setItemId();
 				menuObj.setItemName(tmpName);
 				menuObj.setQuantity(tmpQuantity);
 				menuObj.setPrepTime(tmpTimeprep);
@@ -269,8 +281,9 @@ public:
 		infile.open("file.txt");
 		// open a temporary file where we write all the data that is not to be deleted
 		ofstream outfile("temp.txt");
-		while (infile >> tmpName >> tmpQuantity >> tmpTimeprep >> tmpPrice) {
+		while (infile >> tmpItemId >> tmpName >> tmpQuantity >> tmpTimeprep >> tmpPrice) {
 			if (item != tmpName) {
+				outfile << tmpItemId << endl;
 				outfile << tmpName << endl;
 				outfile << tmpQuantity << endl;
 				outfile << tmpTimeprep << endl;
@@ -303,7 +316,8 @@ public:
 		ifstream infile;
 		infile.open("file.txt");
 		cout << i;
-		while (infile >> tmpName >> tmpQuantity >> tmpTimeprep >> tmpPrice) {
+		while (infile >> tmpItemId >> tmpName >> tmpQuantity >> tmpTimeprep >> tmpPrice) {
+			menuObj.setItemId();
 			menuObj.setItemName(tmpName);
 			menuObj.setQuantity(tmpQuantity);
 			menuObj.setPrepTime(tmpTimeprep);
@@ -314,11 +328,13 @@ public:
 	void viewMenu() { //Display is working just need to make it look pretty now
 		cout << "\t\t\t\t\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2 MENU \xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\n";
 		for (int m = 0; m < i; m++) {
-				cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 " << menuObj.getItemName (m) << endl;
-				cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 " << menuObj.getQuantity (m) << endl;
-				cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 " << menuObj.getPrepTime (m) << endl;
-				cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 " << menuObj.getPrice (m) << endl;
-				cout << "\n\n\t\t\t\t\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\n";	
+
+			cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 " << menuObj.getItemId(m) << endl;
+			cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 " << menuObj.getItemName (m) << endl;
+			cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 " << menuObj.getQuantity (m) << endl;
+			cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 " << menuObj.getPrepTime (m) << endl;
+			cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 " << menuObj.getPrice (m) << endl;
+			cout << "\n\n\t\t\t\t\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\n";	
 		}
 	}
 	
@@ -344,7 +360,7 @@ int main() {
 	cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 1.Admin";
 	cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 2.Customer";
 	cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 3.Exit Program";
-	cout << "\n\n\t\t\t\t\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\n");
+	cout << "\n\n\t\t\t\t\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\n";
 	cin >> option;	
 	
 		cin.ignore();//ignore the newline
@@ -364,7 +380,7 @@ int main() {
 	cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 3.Delete menu items";
 	cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 4.Search for menu items";
 	cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 5.SIGN OUT";
-	cout << "\n\n\t\t\t\t\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\n");	
+	cout << "\n\n\t\t\t\t\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\n";	
 					cin >> choice;
 					cin.ignore();
 					switch (choice) {
@@ -417,12 +433,13 @@ int main() {
 	cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 2.Search for items";
 	cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 3.View order";
 	cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 4.SIGN OUT";
-	cout << "\n\n\t\t\t\t\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\n");	
+	cout << "\n\n\t\t\t\t\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\n";	
 					cin >> choice;
 					cin.ignore();
 					switch (choice) {
 					case 1:
 						customerObj.viewMenu();
+						cout << "What would you like to purchase" << endl;
 						system("pause");
 						break;
 					case 2:
