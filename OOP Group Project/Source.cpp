@@ -329,6 +329,9 @@ public:
 		}
 		infile.close();
 	}
+	void setItemQuantity(int quantity) {
+		menuObj.setQuantity(quantity);
+	}
 	void setOrderTotalCost(int m) {
 		totalcost += menuObj.getPrice(m);
 		orderObj[m].setTotalCost(totalcost);
@@ -339,6 +342,9 @@ public:
 	}
 	void setOrderId(int m) {
 		orderObj[m].setOrderId();
+	}
+	int getItemQuantity(int m) {
+		return menuObj.getQuantity(m);
 	}
 	float getOrderTotalCost(int m) {
 		return orderObj[m].getTotalCost();
@@ -368,6 +374,11 @@ int main() {
 	int option;
 	int decision;
 	int location;
+	int quantity;
+	int searchOrder;
+	int OrderID;
+	int totalCost;
+	int totalPrepTime;
 	string username, password, searchItem;
 	do {
 		int choice = 0;
@@ -465,19 +476,35 @@ int main() {
 					case 1:
 						int tmpid;
 						customerObj.viewMenu();
-						cout << "What would you like to purchase (name): " << endl;
-						getline(cin, searchItem);
-						location = customerObj.searchItems(searchItem);
-						if (location != -1) {
-							customerObj.setOrderId(location);
-							customerObj.setOrderTotalCost(location);
-							customerObj.setOrderTotalPrepTime(location);
-							ofstream outfile("orders.txt");
-							outfile << customerObj.getOrderId(location) << endl;
-							outfile << customerObj.getOrderTotalPrepTime(location) << endl;
-							outfile << customerObj.getOrderTotalCost(location) << endl;
-							outfile.close();
-						}
+						do {
+							cout << "What would you like to purchase (name)(END for no): " << endl;
+							getline(cin, searchItem);
+							if (searchItem == "END") {
+								//saves the order to file
+								ofstream outfile("order.txt", ios_base::app);
+								outfile << customerObj.getOrderId(location) << endl;
+								outfile << customerObj.getOrderTotalPrepTime(location) << endl;
+								outfile << customerObj.getOrderTotalCost(location) << endl;
+								outfile.close();
+								cout << "Your order number is: " << customerObj.getOrderId(location) << endl;
+								break;
+							}
+							location = customerObj.searchItems(searchItem);
+							cout << "How much of that item do you want to purchase: " << endl;
+							cin >> quantity;
+							if (quantity > customerObj.getItemQuantity(location)) {
+								cout << "We do not have so much of that item" << endl;
+							}
+							else {
+								customerObj.setItemQuantity(customerObj.getItemQuantity(location) - quantity);
+							}
+							cin.ignore();
+							if (location != -1) {
+								customerObj.setOrderId(location);
+								customerObj.setOrderTotalCost(location);
+								customerObj.setOrderTotalPrepTime(location);
+							}
+						} while (searchItem != "END");
 						system("pause");
 						break;
 					case 2:
@@ -493,6 +520,21 @@ int main() {
 						}
 						break;
 					case 3:
+						cout << "Enter Order Number or -1 to exit: " << endl;
+						cin >> searchOrder;
+						if (searchOrder >= 0) {
+							ifstream infile;
+							infile.open("order.txt");
+							while (infile >> OrderID >> totalCost >> totalPrepTime) {
+								if (searchOrder == OrderID) {
+									cout << OrderID << endl;
+									cout << totalCost << endl;
+									cout << totalPrepTime << endl;
+								}
+							}
+							infile.close();
+						}
+						system("pause");
 						break;
 					case 4:
 						break;
