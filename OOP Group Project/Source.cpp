@@ -180,7 +180,7 @@ public:
 	}
 	//modify this for quantity (below)
 	int searchItems(string item) {
-		int count=0;
+		int count=0, flag = -1;
 		string tmpitem;
 		ifstream infile;
 		infile.open("file.txt");
@@ -190,14 +190,16 @@ public:
 				cout << "Item Name: "<< tmpName << endl;
 				cout << "Item Quantity: "<< tmpQuantity << endl;
 				cout << "Item Prep-time: "<< tmpTimeprep << endl;
-				cout << "Item Price: $"<< tmpPrice << endl;				
+				cout << "Item Price: $"<< tmpPrice << endl;	
+				flag = 1;			
 				return count;
 			}
 			else { 
-				count++; 
-				cout << "\nItem was not found: " << item << endl;
+				count++; 				
 			}
 		}
+		if (flag == -1)
+			cout << "\nItem was not found." << endl;
 		return -1;
 	}
 };
@@ -247,6 +249,7 @@ public:
 	void editNewItem(string item) {
 		int m = 0;
 		int tmpI = i;
+		int flag = -1;
 		string tmpitem;
 		ifstream infile;
 		infile.open("file.txt");
@@ -254,8 +257,9 @@ public:
 		while (infile >> tmpItemId >>tmpName >> tmpQuantity >> tmpTimeprep >> tmpPrice) {
 			m++;
 			if (item == tmpName) {
+				flag = 1;
 				i = m - 1;
-				cout << "\n\nItem Name: ";
+				cout << "Item Name: ";
 				getline(cin, tmpName);
 				cout << "\nQuantity: ";
 				cin >> tmpQuantity;
@@ -278,10 +282,12 @@ public:
 				break;
 			}
 		}
-
+		if (flag == -1)
+			cout << "\nItem was not found." << endl;
 	}
 	void DelNewItem(string item) {
 		int m = 0;
+		int flag = -1;
 		string tmpitem;
 		ifstream infile;
 		infile.open("file.txt");
@@ -300,6 +306,10 @@ public:
 				counterfile.close();
 			}
 		}
+		if (flag == -1)
+			cout << "\nItem not found." << endl;
+		else 
+			cout << "\n\nItem Deleted.\n";
 		infile.close();
 		outfile.close();
 		// delete the old file and rename the temp file to the old file
@@ -358,13 +368,10 @@ public:
 	}
 	void viewMenu() { //Display is working just need to make it look pretty now
 		cout << "\t\t\t\t\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2 MENU \xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\n";
-		for (int m = 0; m < i; m++) {
-
-			cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 " << menuObj.getItemId(m) << endl;
-			cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 " << menuObj.getItemName (m) << endl;
-			cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 " << menuObj.getQuantity (m) << endl;
-			cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 " << menuObj.getPrepTime (m) << endl;
-			cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 " << menuObj.getPrice (m) << endl;
+		for (int m = 0; m < i; m++) {			
+			cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 " << "Item Name: " << menuObj.getItemName (m) << endl;
+			cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 " << "Preparation Time (minutes): " << menuObj.getPrepTime (m) << endl;
+			cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 " << "Price: $" << menuObj.getPrice (m) << endl;
 			cout << "\n\n\t\t\t\t\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\n";	
 		}
 	}
@@ -443,8 +450,7 @@ int main() {
 							case 3:
 								cout << "Enter the name of the item you want to delete: ";
 								getline(cin, searchItem);
-								adminObj.DelNewItem(searchItem);
-								cout << "\n\nItem Deleted.\n";
+								adminObj.DelNewItem(searchItem);								
 								system("pause");
 								break;
 							case 4:
@@ -486,76 +492,81 @@ int main() {
 						cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 3.View order";
 						cout << "\n\n\t\t\t\t\xDB\xDB\xDB\xDB\xB2 4.SIGN OUT";
 						cout << "\n\n\t\t\t\t\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\xB2\n";	
+						cout << "\nEnter Selection: ";						
 						cin >> choice;
 						cin.ignore();
+						while (choice < 1 || choice > 4){
+							cout << "\nInvalid Entry!\nEnter Selection: ";
+							cin >> choice;
+							cin.ignore();
+						}
+						system("cls");
 						switch (choice) {
-						case 1:
-							int tmpid;
-							customerObj.viewMenu();
-							do {
-								cout << "What would you like to purchase (name)(END for no): " << endl;
-								getline(cin, searchItem);
-								if (searchItem == "END") {
-									//saves the order to file
-									ofstream outfile("order.txt", ios_base::app);
-									outfile << customerObj.getOrderId(location) << endl;
-									outfile << customerObj.getOrderTotalPrepTime(location) << endl;
-									outfile << customerObj.getOrderTotalCost(location) << endl;
-									outfile.close();
-									cout << "Your order number is: " << customerObj.getOrderId(location) << endl;
-									break;
-								}
-								location = customerObj.searchItems(searchItem);
-								cout << "How much of that item do you want to purchase: " << endl;
-								cin >> quantity;
-								if (quantity > customerObj.getItemQuantity(location)) {
-									cout << "We do not have so much of that item" << endl;
-								}
-								else {
-									customerObj.setItemQuantity(customerObj.getItemQuantity(location) - quantity);
-								}
-								cin.ignore();
-								if (location != -1) {
-									customerObj.setOrderId(location);
-									customerObj.setOrderTotalCost(location);
-									customerObj.setOrderTotalPrepTime(location);
-								}
-							} while (searchItem != "END");
-							system("pause");
-							break;
-						case 2:
-							while (true) {
-								cout << "Enter item you would like to search for: " << endl;
-								getline(cin, searchItem);
-								customerObj.searchItems(searchItem);
-								cout << "Search another item? 1) yes 2) no" << endl;
-								cin >> decision;
-								cin.ignore();
-								if (decision == 2)
-									break;
-							}
-							break;
-						case 3:
-							cout << "Enter Order Number or -1 to exit: " << endl;
-							cin >> searchOrder;
-							if (searchOrder >= 0) {
-								ifstream infile;
-								infile.open("order.txt");
-								while (infile >> OrderID >> totalCost >> totalPrepTime) {
-									if (searchOrder == OrderID) {
-										cout << OrderID << endl;
-										cout << totalCost << endl;
-										cout << totalPrepTime << endl;
+							case 1:
+								int tmpid;
+								customerObj.viewMenu();
+								do {
+									cout << "\n\nEnter the name of the item you would like to purchase (Enter END to complete order): ";
+									getline(cin, searchItem);
+									if (searchItem == "END") {
+										//saves the order to file
+										ofstream outfile("order.txt", ios_base::app);
+										outfile << customerObj.getOrderId(location) << endl;
+										outfile << customerObj.getOrderTotalPrepTime(location) << endl;
+										outfile << customerObj.getOrderTotalCost(location) << endl;
+										outfile.close();
+										cout << "\nYour order number is: " << customerObj.getOrderId(location) << endl;
+										break;
 									}
+									location = customerObj.searchItems(searchItem);
+									cout << "\nHow much of that item do you want to purchase: ";
+									cin >> quantity;
+									if (quantity > customerObj.getItemQuantity(location)) {
+										cout << "\nInsufficient quantities available to complete order.\n" << endl;
+									}
+									else {
+										customerObj.setItemQuantity(customerObj.getItemQuantity(location) - quantity);
+									}
+									cin.ignore();
+									if (location != -1) {
+										customerObj.setOrderId(location);
+										customerObj.setOrderTotalCost(location);
+										customerObj.setOrderTotalPrepTime(location);
+									}
+								} while (searchItem != "END");
+								cout << "\n";
+								system("pause");
+								break;
+							case 2:
+								while (true) {
+									cout << "Enter item you would like to search for: ";
+									getline(cin, searchItem);
+									customerObj.searchItems(searchItem);
+									cout << "\nSearch another item? \n1) yes \n2) no \nOption: ";
+									cin >> decision;
+									cin.ignore();
+									if (decision == 2)
+										break;
 								}
-								infile.close();
-							}
-							system("pause");
+								break;
+							case 3:
+								cout << "Enter Order Number or -1 to exit: ";
+								cin >> searchOrder;
+								if (searchOrder >= 0) {
+									ifstream infile;
+									infile.open("order.txt");
+									while (infile >> OrderID >> totalCost >> totalPrepTime) {
+										if (searchOrder == OrderID) {
+											cout << "\n\nOrder ID: " <<OrderID << endl;
+											cout << "Total Cost: " << totalCost << endl;
+											cout << "Preparation Time (minutes): " << totalPrepTime << endl;
+											cout << "\n\n";
+										}
+									}
+									infile.close();
+								}
+								system("pause");
 							break;
-						case 4:
-							break;
-						default:
-							cout << "Invalid option selected";
 						}
 					}
 				} else {
