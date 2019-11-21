@@ -39,7 +39,7 @@ public:
 	}
 	//Set or Mutator Functions
 	void setItemId() {
-		itemId +=autoItemId;
+		itemId = ++autoItemId;
 	}
 	void setName(string name) {
 		this->name = name;
@@ -324,8 +324,6 @@ private:
 	Order orderObj[max_item];
 public:
 	Customer() {
-		int tmpOrderID, tmpPrepTime;
-		float tmpPrice;
 		Users::username = "cust1";
 		Users::password = "qwerty";
 		//when it is called it is going to store everything from the file respectively
@@ -341,12 +339,6 @@ public:
 			menuObj.setPrice(tmpPrice);
 		}
 		infile.close();
-		ifstream orderfile;
-		orderfile.open("order.txt");
-		while (orderfile >> tmpOrderID >> tmpPrepTime >> tmpPrice) {
-			autoOrderId++;
-		}
-		orderfile.close();
 	}
 	void setItemQuantity(int quantity) {
 		menuObj.setQuantity(quantity);
